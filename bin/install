@@ -53,19 +53,24 @@ install_release() {
 		if [[ "${major_version}" = "1" ]]; then
 			install_v1_bundled_installer "${download_path}" "${install_path}"
 		elif [[ "${major_version}" = "2" ]]; then
-			if [[ "${OS_NAME}" = "Linux" ]]; then
-				if [[ "${OS_ARCH}" = "x86_64" || "${OS_ARCH}" = "aarch64" ]]; then
-					install_v2_linux_bundled_installer "${download_path}" "${install_path}"
-				else
-					fail "asdf-${TOOL_NAME} does not support ${OS_ARCH} on ${OS_NAME}"
-				fi
-			elif [[ "${OS_NAME}" = "Darwin" ]]; then
-				install_v2_macos_bundled_installer "${download_path}" "${install_path}"
-			elif [[ "${OS_NAME}" = "Windows_NT" ]]; then
-				install_v2_windows_bundled_installer "${download_path}" "${install_path}"
-			else
-				fail "asdf-${TOOL_NAME} does not support OS distribution ${OS_NAME}"
-			fi
+			case "${OS_NAME}" in
+				"Linux")
+					if [[ "${OS_ARCH}" == "x86_64" || "${OS_ARCH}" == "aarch64" ]]; then
+						install_v2_linux_bundled_installer "${download_path}" "${install_path}"
+					else
+						fail "asdf-${TOOL_NAME} does not support ${OS_ARCH} on ${OS_NAME}"
+					fi
+					;;
+				"Darwin")
+					install_v2_macos_bundled_installer "${download_path}" "${install_path}"
+					;;
+				"Windows_NT"|"MINGW64_NT")
+					install_v2_windows_bundled_installer "${download_path}" "${install_path}"
+					;;
+				*)
+					fail "asdf-${TOOL_NAME} does not support OS distribution ${OS_NAME}"
+					;;
+			esac
 		else
 			fail "asdf-${TOOL_NAME} does not support major version v${major_version}"
 		fi

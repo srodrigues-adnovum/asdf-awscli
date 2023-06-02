@@ -13,5 +13,5 @@ printfn() {
 }
 
 OS_INFO="$(uname -sm)"
-OS_NAME="${OS_INFO% *}"
+OS_NAME="${OS_INFO%%-*}"
 OS_ARCH="${OS_INFO#* }"

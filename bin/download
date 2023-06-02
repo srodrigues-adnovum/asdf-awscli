@@ -41,22 +41,27 @@ download_release() {
 		release_url="https://s3.amazonaws.com/aws-cli/awscli-bundle-${version}.zip"
 		filename="awscli-bundle.zip"
 	elif [[ "${major_version}" = "2" ]]; then
-		if [[ "${OS_NAME}" = "Linux" ]]; then
-			if [[ "${OS_ARCH}" = "x86_64" || "${OS_ARCH}" = "aarch64" ]]; then
-				release_url="https://awscli.amazonaws.com/awscli-exe-linux-${OS_ARCH}-${version}.zip"
-				filename="awscliv2.zip"
-			else
-				fail "asdf-${TOOL_NAME} does not support ${OS_ARCH} on ${OS_NAME}"
-			fi
-		elif [[ "${OS_NAME}" = "Darwin" ]]; then
-			release_url="https://awscli.amazonaws.com/AWSCLIV2-${version}.pkg"
-			filename="AWSCLIV2.pkg"
-		elif [[ "${OS_NAME}" = "Windows_NT" ]]; then
-			release_url="https://awscli.amazonaws.com/AWSCLIV2-${version}.msi"
-			filename="AWSCLIV2.msi"
-		else
-			fail "asdf-${TOOL_NAME} does not support OS distribution ${OS_NAME}"
-		fi
+		case "${OS_NAME}" in
+			"Linux")
+				if [[ "${OS_ARCH}" == "x86_64" || "${OS_ARCH}" == "aarch64" ]]; then
+					release_url="https://awscli.amazonaws.com/awscli-exe-linux-${OS_ARCH}-${version}.zip"
+					filename="awscliv2.zip"
+				else
+					fail "asdf-${TOOL_NAME} does not support ${OS_ARCH} on ${OS_NAME}"
+				fi
+				;;
+			"Darwin")
+				release_url="https://awscli.amazonaws.com/AWSCLIV2-${version}.pkg"
+				filename="AWSCLIV2.pkg"
+				;;
+			"Windows_NT"|"MINGW64_NT")
+				release_url="https://awscli.amazonaws.com/AWSCLIV2-${version}.msi"
+				filename="AWSCLIV2.msi"
+				;;
+			*)
+				fail "asdf-${TOOL_NAME} does not support OS distribution ${OS_NAME}"
+				;;
+		esac
 	else
 		fail "asdf-${TOOL_NAME} does not support major version v${version}"
 	fi
